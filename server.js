@@ -1,4 +1,10 @@
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
+
 const connectDB = require('./config/db');
 const path = require('path');
 
@@ -8,6 +14,8 @@ const app = express();
 connectDB();
 
 // Init Middleware
+app.use(cors());
+app.use(morgan('combined'));
 app.use(express.json());
 
 // Define Routes
@@ -28,4 +36,20 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// Listen both http & https ports
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(
+  {
+    key: fs.readFileSync('./certs/private-key.pem'),
+    cert: fs.readFileSync('./certs/cert.pem')
+  },
+  app
+);
+
+httpServer.listen(80, () => {
+  console.log('HTTP Server running on port 80');
+});
+
+httpsServer.listen(443, () => {
+  console.log('HTTPS Server running on port 443');
+});
