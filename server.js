@@ -35,21 +35,23 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 5000;
-
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}...`);
+});
 // Listen both http & https ports
-const httpServer = http.createServer(app);
-const httpsServer = https.createServer(
-  {
-    key: fs.readFileSync('./certs/private-key.pem'),
-    cert: fs.readFileSync('./certs/cert.pem')
-  },
-  app
-);
+// const httpServer = http.createServer(app);
+// const httpsServer = https.createServer(
+//   {
+//     key: fs.readFileSync('./certs/private-key.pem'),
+//     cert: fs.readFileSync('./certs/cert.pem')
+//   },
+//   app
+// );
 
-httpServer.listen(80, () => {
-  console.log('HTTP Server running on port 80');
-});
+// httpServer.listen(80, () => {
+//   console.log('HTTP Server running on port 80');
+// });
 
-httpsServer.listen(443, () => {
-  console.log('HTTPS Server running on port 443');
-});
+// httpsServer.listen(443, () => {
+//   console.log('HTTPS Server running on port 443');
+// });
